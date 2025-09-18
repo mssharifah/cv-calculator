@@ -10,7 +10,11 @@
     --ring:#334155; --brand:#22d3ee; --ok:#22c55e; --wa:#25D366; --danger:#ef4444;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Tajawal","Cairo","Segoe UI",Tahoma,sans-serif}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Tajawal","Cairo","Segoe UI",Tahoma,sans-serif;
+    unicode-bidi: plaintext;
+  }
   .wrap{max-width:980px;margin:28px auto;padding:16px}
   .card{background:var(--card);border:1px solid #0e162c;border-radius:18px;padding:18px;box-shadow:0 12px 28px rgba(0,0,0,.45)}
   header{display:flex;gap:12px;align-items:center;justify-content:center}
@@ -32,9 +36,10 @@
   .chip small{color:#cbd5e1}
   .chip b{display:block;font-size:18px;margin-top:4px}
   .actions{display:grid;gap:8px;margin-top:12px}
-  @media (min-width:560px){ .actions{grid-template-columns:repeat(4,1fr)} }
+  @media (min-width:560px){ .actions{grid-template-columns:repeat(5,1fr)} }
   .btn{border:none;border-radius:12px;padding:12px 14px;font-weight:900;cursor:pointer;color:#06131a}
   .ok{background:linear-gradient(180deg,#34d399,#10b981)}
+  .copy{background:linear-gradient(180deg,#c7d2fe,#818cf8)}
   .wa{background:linear-gradient(180deg,#61eb88,#25D366)}
   .print{background:linear-gradient(180deg,#67e8f9,#22d3ee)}
   .reset{background:linear-gradient(180deg,#fca5a5,#ef4444)}
@@ -52,7 +57,8 @@
   <div class="wrap">
     <div class="card">
       <header>
-        <div class="logo"><img src="logo.png" alt="الشعار" onerror="this.style.display='none'"></div>
+        <!-- تعديل اسم الشعار ليتطابق مع الملف الموجود -->
+        <div class="logo"><img src="شعار.png.jpg" alt="الشعار" onerror="this.style.display='none'"></div>
         <div>
           <h1>حاسبة السيرة الذاتية</h1>
           <div class="sub">فاتورة تلقائية — نسخ / واتساب / طباعة</div>
@@ -60,15 +66,14 @@
       </header>
 
       <div class="note">
-        ⚠ الأسعار مبنية على تقدير أولي لصفحة واحدة فقط. عند تجاوز صفحة واحدة بعد التنسيق:
-        <b>10 ريال لكل نصف صفحة</b> أو <b>15 ريال لكل صفحة كاملة</b>.
+        ⚠ الأسعار مبنية على تقدير أولي لصفحة واحدة فقط.
       </div>
 
       <!-- البيانات -->
       <div class="grid grid-2" style="margin-top:12px">
         <div>
           <label for="name">اسم العميل</label>
-          <input id="name" class="input" placeholder="مثال: أحمد محمد">
+          <input id="name" class="input" placeholder="شريفة الغفيري">
         </div>
         <div>
           <label for="phone">رقم الجوال</label>
@@ -81,14 +86,13 @@
         <div>
           <label for="urgency">١) نوع الطلب <span id="uBadge" class="badge"></span></label>
           <select id="urgency" class="input">
-            <option value="urgent">مستعجل (24 ساعة)</option>
-            <option value="normal" selected>غير مستعجل (48 ساعة)</option>
+            <option value="urgent">مستعجل (٢٤ ساعة)</option>
+            <option value="normal" selected>غير مستعجل (٤٨ ساعة)</option>
           </select>
         </div>
         <div>
           <label for="pages">٢) عدد الصفحات الأساسية</label>
           <input id="pages" type="number" min="1" value="1" class="input">
-          <div class="hint">احسب عدد الصفحات المتوقع قبل التنسيق</div>
         </div>
         <div>
           <label for="lang">٣) اللغة</label>
@@ -100,11 +104,10 @@
         </div>
       </div>
 
-      <!-- نوع السيرة (يتغير حسب نوع الطلب) -->
+      <!-- نوع السيرة -->
       <div style="margin-top:6px">
         <label for="cvType">٤) نوع السيرة (يتغيّر حسب نوع الطلب)</label>
         <select id="cvType" class="input"></select>
-        <div class="hint">اختر نوع السيرة من القائمة المناسبة</div>
       </div>
 
       <!-- إضافات اختيارية -->
@@ -113,55 +116,42 @@
           <label for="extraDesign">٥) تصميم خاص خارج تصاميم الفريق</label>
           <select id="extraDesign" class="input">
             <option value="0" selected>لا</option>
-            <option value="10">نعم (+10)</option>
+            <option value="10">نعم (+١٠)</option>
           </select>
         </div>
         <div>
           <label for="extraTrans">٦) ترجمة السيرة</label>
           <select id="extraTrans" class="input">
             <option value="0" selected>لا</option>
-            <option value="10">نعم (+10)</option>
+            <option value="10">نعم (+١٠)</option>
           </select>
         </div>
         <div>
           <label for="extraEditable">٧) نسخة قابلة للتعديل (وورد/باوربوينت)</label>
           <select id="extraEditable" class="input">
             <option value="0" selected>لا</option>
-            <option value="15">نعم (+15)</option>
+            <option value="15">نعم (+١٥)</option>
           </select>
-        </div>
-      </div>
-
-      <!-- زيادات الصفحات بعد التنسيق -->
-      <div class="grid grid-2" style="margin-top:6px">
-        <div>
-          <label for="extraHalf">٨) أنصاف صفحات إضافية</label>
-          <input id="extraHalf" type="number" min="0" value="0" class="input">
-          <div class="hint">+10 ريال لكل نصف صفحة</div>
-        </div>
-        <div>
-          <label for="extraFull">٩) صفحات كاملة إضافية</label>
-          <input id="extraFull" type="number" min="0" value="0" class="input">
-          <div class="hint">+15 ريال لكل صفحة</div>
         </div>
       </div>
 
       <!-- الملخص والسعر -->
       <div class="meta">
-        <div class="chip"><small>سعر الصفحة</small><b id="pricePer">0</b><small>ريال</small></div>
-        <div class="chip"><small>تكلفة الأساس</small><b id="baseTotal">0</b><small>ريال</small></div>
-        <div class="chip"><small>الإضافات</small><b id="addons">0</b><small>ريال</small></div>
-        <div class="chip"><small>الإجمالي</small><b id="grand">0</b><small>ريال</small></div>
+        <div class="chip"><small>سعر الصفحة</small><b id="pricePer">٠</b><small>ريال</small></div>
+        <div class="chip"><small>تكلفة الأساس</small><b id="baseTotal">٠</b><small>ريال</small></div>
+        <div class="chip"><small>الإضافات</small><b id="addons">٠</b><small>ريال</small></div>
+        <div class="chip"><small>الإجمالي</small><b id="grand">٠</b><small>ريال</small></div>
       </div>
 
       <!-- نص الفاتورة -->
       <label style="margin-top:14px">نص الفاتورة الجاهز 📋</label>
       <textarea id="invoice" class="input" placeholder="سيظهر هنا نص الفاتورة النهائي…"></textarea>
 
-      <!-- أزرار -->
+      <!-- الأزرار -->
       <div class="actions">
         <button class="btn ok"   id="calcBtn">حساب</button>
-        <button class="btn wa"   id="waBtn">مشاركة واتساب</button>
+        <button class="btn copy" id="copyBtn">نسخ الفاتورة</button>
+        <button class="btn wa"   id="waBtn">واتساب</button>
         <button class="btn print" onclick="window.print()">طباعة</button>
         <button class="btn reset" id="resetBtn">إعادة ضبط</button>
       </div>
@@ -169,159 +159,101 @@
   </div>
 
 <script>
-/* أسعار نوع السيرة حسب (مستعجل/غير مستعجل) */
+/* الأسعار لكل نوع */
 const PRICES = {
   urgent: {
-    "سيرة احترافية بالعربية": 35,
-    "سيرة احترافية بالإنجليزية": 35,
-    "سيرة احترافية ثنائية اللغة": 45,
-    "سيرة رسمية بالعربية": 35,
-    "سيرة بسيطة بالإنجليزية": 35,
-    "سيرة رسمية ثنائية اللغة": 40,
-    "سيرة احترافية تدعم ATS": 45,
-    "سيرة إنجليزية تدعم ATS": 40
+    "سيرة ذاتية احترافية باللغة العربية": 35,
+    "سيرة ذاتية احترافية باللغة الإنجليزية": 35,
+    "سيرة ذاتية احترافية ثنائية اللغة": 45
   },
   normal: {
-    "سيرة احترافية بالعربية": 25,
-    "سيرة احترافية بالإنجليزية": 25,
-    "سيرة احترافية ثنائية اللغة": 30,
-    "سيرة رسمية بالعربية": 25,
-    "سيرة رسمية بالإنجليزية": 25,
-    "سيرة رسمية ثنائية اللغة": 30,
-    "سيرة احترافية تدعم ATS": 30,
-    "سيرة إنجليزية تدعم ATS": 30
+    "سيرة ذاتية احترافية باللغة العربية": 25,
+    "سيرة ذاتية احترافية باللغة الإنجليزية": 25,
+    "سيرة ذاتية احترافية ثنائية اللغة": 35
   }
 };
 
-/* عناصر */
-const urgencyEl = document.getElementById('urgency');
-const cvTypeEl  = document.getElementById('cvType');
-const pagesEl   = document.getElementById('pages');
-const langEl    = document.getElementById('lang');
-const extraDesignEl = document.getElementById('extraDesign');
-const extraTransEl  = document.getElementById('extraTrans');
-theExtraEditableEl  = document.getElementById('extraEditable');
-const extraHalfEl   = document.getElementById('extraHalf');
-const extraFullEl   = document.getElementById('extraFull');
+/* DOM */
+const urgency=document.getElementById("urgency"),
+      lang=document.getElementById("lang"),
+      pages=document.getElementById("pages"),
+      cvType=document.getElementById("cvType"),
+      extraDesign=document.getElementById("extraDesign"),
+      extraTrans=document.getElementById("extraTrans"),
+      extraEditable=document.getElementById("extraEditable"),
+      pricePer=document.getElementById("pricePer"),
+      baseTotal=document.getElementById("baseTotal"),
+      addons=document.getElementById("addons"),
+      grand=document.getElementById("grand"),
+      invoice=document.getElementById("invoice"),
+      name=document.getElementById("name"),
+      phone=document.getElementById("phone");
 
-const pricePerEl = document.getElementById('pricePer');
-const baseTotalEl= document.getElementById('baseTotal');
-const addonsEl   = document.getElementById('addons');
-const grandEl    = document.getElementById('grand');
-const invoiceEl  = document.getElementById('invoice');
-
-const calcBtn = document.getElementById('calcBtn');
-const waBtn   = document.getElementById('waBtn');
-const resetBtn= document.getElementById('resetBtn');
-
-/* تعبئة قائمة نوع السيرة حسب نوع الطلب */
-function fillCvTypes(){
-  const mode = urgencyEl.value; // urgent | normal
-  cvTypeEl.innerHTML = '';
-  Object.entries(PRICES[mode]).forEach(([label, price])=>{
-    const opt = document.createElement('option');
-    opt.value = label;
-    opt.textContent = ${label} — ${price} ريال/صفحة;
-    cvTypeEl.appendChild(opt);
+/* تحديث قائمة أنواع السيرة حسب نوع الطلب */
+function updateCVTypes(){
+  cvType.innerHTML="";
+  Object.keys(PRICES[urgency.value]).forEach(type=>{
+    let opt=document.createElement("option");
+    opt.value=type; opt.textContent=type;
+    cvType.appendChild(opt);
   });
-  updatePricePreview();
+}
+updateCVTypes();
+urgency.addEventListener("change",updateCVTypes);
+
+/* تحويل رقم إلى أرقام عربية */
+function toArabic(num){
+  return num.toString().replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
 }
 
-/* تحديث العرض السريع للأسعار */
-function updatePricePreview(){
-  const mode = urgencyEl.value;
-  const type = cvTypeEl.value;
-  const per  = PRICES[mode][type] || 0;
-  const pages = Math.max(1, parseInt(pagesEl.value||'1',10));
-  const addons =
-    parseInt(extraDesignEl.value||'0',10) +
-    parseInt(extraTransEl.value||'0',10) +
-    parseInt(theExtraEditableEl.value||'0',10) +
-    (parseInt(extraHalfEl.value||'0',10)*10) +
-    (parseInt(extraFullEl.value||'0',10)*15);
+/* الحساب */
+document.getElementById("calcBtn").addEventListener("click",()=>{
+  let p=parseInt(pages.value)||1;
+  let unit=PRICES[urgency.value][cvType.value]||0;
+  let base=unit*p;
+  let extras=+extraDesign.value+ +extraTrans.value+ +extraEditable.value;
+  let total=base+extras;
 
-  const base = per * pages;
-  const total = base + addons;
-  pricePerEl.textContent = per;
-  baseTotalEl.textContent = base;
-  addonsEl.textContent = addons;
-  grandEl.textContent = total;
-}
+  pricePer.textContent=toArabic(unit);
+  baseTotal.textContent=toArabic(base);
+  addons.textContent=toArabic(extras);
+  grand.textContent=toArabic(total);
 
-/* إنشاء نص الفاتورة */
-function buildInvoice(){
-  const name  = document.getElementById('name').value.trim() || 'عميل';
-  const phone = document.getElementById('phone').value.trim() || '—';
-  const mode  = urgencyEl.value === 'urgent' ? 'مستعجل (24 ساعة)' : 'غير مستعجل (48 ساعة)';
-  const type  = cvTypeEl.value;
-  const pages = Math.max(1, parseInt(pagesEl.value||'1',10));
+  invoice.value=
+`فاتورة أولية
+----------------------
+👤 العميل: ${name.value||"غير محدد"}
+📞 الجوال: ${phone.value||"غير محدد"}
 
-  const per = parseInt(pricePerEl.textContent||'0',10);
-  const base = parseInt(baseTotalEl.textContent||'0',10);
-  const addons = parseInt(addonsEl.textContent||'0',10);
-  const total = parseInt(grandEl.textContent||'0',10);
+📌 نوع الطلب: ${urgency.value==="urgent"?"مستعجل":"غير مستعجل"}
+📄 نوع السيرة: ${cvType.value}
+📑 عدد الصفحات: ${toArabic(p)}
 
-  const addLines = [];
-  if(+extraDesignEl.value)  addLines.push(• تصميم خاص: +${+extraDesignEl.value} ريال);
-  if(+extraTransEl.value)   addLines.push(• ترجمة: +${+extraTransEl.value} ريال);
-  if(+theExtraEditableEl.value) addLines.push(• نسخة قابلة للتعديل: +${+theExtraEditableEl.value} ريال);
-  if(+extraHalfEl.value)    addLines.push(• أنصاف صفحات (${extraHalfEl.value}): +${(+extraHalfEl.value)*10} ريال);
-  if(+extraFullEl.value)    addLines.push(• صفحات كاملة (${extraFullEl.value}): +${(+extraFullEl.value)*15} ريال);
+💰 الأساس: ${toArabic(base)} ريال
+➕ الإضافات: ${toArabic(extras)} ريال
+======================
+الإجمالي: ${toArabic(total)} ريال
 
-  const note = "⚠ الأسعار لصفحة واحدة كأساس. الزيادات تُحسب 10 ريال لنصف صفحة و15 ريال للصفحة.";
-  return [
-    فاتورة تقديرية — حاسبة السيرة الذاتية,
-    العميل: ${name} — الجوال: ${phone},
-    نوع الطلب: ${mode},
-    نوع السيرة: ${type},
-    عدد الصفحات الأساسية: ${pages} صفحة,
-    سعر الصفحة: ${per} ريال — تكلفة الأساس: ${base} ريال,
-    addLines.length? إضافات:\n${addLines.join('\n')} : إضافات: لا يوجد,
-    الإجمالي المستحق: ${total} ريال,
-    note
-  ].join('\n');
-}
-
-/* أحداث */
-urgencyEl.addEventListener('change', ()=>{ fillCvTypes(); updatePricePreview(); });
-cvTypeEl.addEventListener('change', updatePricePreview);
-pagesEl.addEventListener('input', updatePricePreview);
-extraDesignEl.addEventListener('change', updatePricePreview);
-extraTransEl.addEventListener('change', updatePricePreview);
-theExtraEditableEl.addEventListener('change', updatePricePreview);
-extraHalfEl.addEventListener('input', updatePricePreview);
-extraFullEl.addEventListener('input', updatePricePreview);
-
-calcBtn.addEventListener('click', ()=>{
-  updatePricePreview();
-  invoiceEl.value = buildInvoice();
+⚠ الأسعار مبنية على تقدير أولي لصفحة واحدة فقط.`;
 });
 
-waBtn.addEventListener('click', ()=>{
-  if(!invoiceEl.value) invoiceEl.value = buildInvoice();
-  const url = 'https://wa.me/?text=' + encodeURIComponent(invoiceEl.value);
-  window.open(url, '_blank');
+/* نسخ */
+document.getElementById("copyBtn").addEventListener("click",()=>{
+  invoice.select(); document.execCommand("copy");
+  alert("تم نسخ الفاتورة ✅");
 });
 
-resetBtn.addEventListener('click', ()=>{
-  document.getElementById('name').value = '';
-  document.getElementById('phone').value = '';
-  urgencyEl.value = 'normal';
-  pagesEl.value = 1;
-  langEl.value = 'ar';
-  extraDesignEl.value = '0';
-  extraTransEl.value = '0';
-  theExtraEditableEl.value = '0';
-  extraHalfEl.value = 0;
-  extraFullEl.value = 0;
-  fillCvTypes();
-  updatePricePreview();
-  invoiceEl.value = '';
+/* واتساب */
+document.getElementById("waBtn").addEventListener("click",()=>{
+  let msg=encodeURIComponent(invoice.value);
+  window.open("https://wa.me/?text="+msg,"_blank");
 });
 
-/* تهيئة أولية */
-fillCvTypes();
-updatePricePreview();
+/* إعادة ضبط */
+document.getElementById("resetBtn").addEventListener("click",()=>{
+  document.querySelector("form")?.reset();
+  invoice.value=""; pricePer.textContent=baseTotal.textContent=addons.textContent=grand.textContent="٠";
+});
 </script>
 </body>
 </html>
