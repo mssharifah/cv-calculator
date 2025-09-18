@@ -57,7 +57,7 @@
   <div class="wrap">
     <div class="card">
       <header>
-        <!-- تعديل اسم الشعار ليتطابق مع الملف الموجود -->
+        <!-- اسم الشعار يطابق ملفك بالمستودع -->
         <div class="logo"><img src="شعار.png.jpg" alt="الشعار" onerror="this.style.display='none'"></div>
         <div>
           <h1>حاسبة السيرة الذاتية</h1>
@@ -84,7 +84,7 @@
       <!-- نوع الطلب واللغة والصفحات -->
       <div class="grid grid-3">
         <div>
-          <label for="urgency">١) نوع الطلب <span id="uBadge" class="badge"></span></label>
+          <label for="urgency">١) نوع الطلب</label>
           <select id="urgency" class="input">
             <option value="urgent">مستعجل (٢٤ ساعة)</option>
             <option value="normal" selected>غير مستعجل (٤٨ ساعة)</option>
@@ -104,16 +104,16 @@
         </div>
       </div>
 
-      <!-- نوع السيرة -->
+      <!-- نوع السيرة (يتغير حسب نوع الطلب) -->
       <div style="margin-top:6px">
         <label for="cvType">٤) نوع السيرة (يتغيّر حسب نوع الطلب)</label>
         <select id="cvType" class="input"></select>
       </div>
 
-      <!-- إضافات اختيارية -->
+      <!-- خدمات إضافية -->
       <div class="grid grid-3" style="margin-top:6px">
         <div>
-          <label for="extraDesign">٥) تصميم خاص خارج تصاميم الفريق</label>
+          <label for="extraDesign">٥) تصميم خارج تصاميم الفريق</label>
           <select id="extraDesign" class="input">
             <option value="0" selected>لا</option>
             <option value="10">نعم (+١٠)</option>
@@ -159,101 +159,145 @@
   </div>
 
 <script>
-/* الأسعار لكل نوع */
+/* قوائم الأسعار — مستعجل / غير مستعجل */
 const PRICES = {
   urgent: {
     "سيرة ذاتية احترافية باللغة العربية": 35,
     "سيرة ذاتية احترافية باللغة الإنجليزية": 35,
-    "سيرة ذاتية احترافية ثنائية اللغة": 45
+    "سيرة ذاتية احترافية ثنائية اللغة": 45,
+    "سيرة ذاتية رسمية باللغة العربية": 35,
+    "سيرة ذاتية بسيطة باللغة الإنجليزية": 35,
+    "سيرة ذاتية رسمية ثنائية اللغة": 40,
+    "سيرة ذاتية احترافية تدعم ATS": 45,
+    "سيرة ذاتية باللغة الإنجليزية تدعم ATS": 40
   },
   normal: {
     "سيرة ذاتية احترافية باللغة العربية": 25,
     "سيرة ذاتية احترافية باللغة الإنجليزية": 25,
-    "سيرة ذاتية احترافية ثنائية اللغة": 35
+    "سيرة ذاتية احترافية ثنائية اللغة": 30,
+    "سيرة ذاتية رسمية باللغة العربية": 25,
+    "سيرة ذاتية رسمية باللغة الإنجليزية": 25,
+    "سيرة ذاتية رسمية ثنائية اللغة": 30,
+    "سيرة ذاتية احترافية تدعم ATS": 30,
+    "سيرة ذاتية باللغة الإنجليزية تدعم ATS": 30
   }
 };
 
-/* DOM */
-const urgency=document.getElementById("urgency"),
-      lang=document.getElementById("lang"),
-      pages=document.getElementById("pages"),
-      cvType=document.getElementById("cvType"),
-      extraDesign=document.getElementById("extraDesign"),
-      extraTrans=document.getElementById("extraTrans"),
-      extraEditable=document.getElementById("extraEditable"),
-      pricePer=document.getElementById("pricePer"),
-      baseTotal=document.getElementById("baseTotal"),
-      addons=document.getElementById("addons"),
-      grand=document.getElementById("grand"),
-      invoice=document.getElementById("invoice"),
-      name=document.getElementById("name"),
-      phone=document.getElementById("phone");
+/* عناصر DOM */
+const urgency = document.getElementById('urgency');
+const cvType  = document.getElementById('cvType');
+const pages   = document.getElementById('pages');
+const lang    = document.getElementById('lang');
 
-/* تحديث قائمة أنواع السيرة حسب نوع الطلب */
-function updateCVTypes(){
-  cvType.innerHTML="";
-  Object.keys(PRICES[urgency.value]).forEach(type=>{
-    let opt=document.createElement("option");
-    opt.value=type; opt.textContent=type;
+const extraDesign   = document.getElementById('extraDesign');
+const extraTrans    = document.getElementById('extraTrans');
+const extraEditable = document.getElementById('extraEditable');
+
+const pricePer = document.getElementById('pricePer');
+const baseTotal= document.getElementById('baseTotal');
+const addons   = document.getElementById('addons');
+const grand    = document.getElementById('grand');
+const invoice  = document.getElementById('invoice');
+
+const nameEl = document.getElementById('name');
+const phoneEl= document.getElementById('phone');
+
+/* أرقام عربية */
+function toArabic(n){return String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);}
+
+/* تعبئة أنواع السيرة حسب نوع الطلب */
+function fillCvTypes(){
+  const mode = urgency.value; // urgent | normal
+  cvType.innerHTML = "";
+  Object.entries(PRICES[mode]).forEach(([label, price])=>{
+    const opt = document.createElement('option');
+    opt.value = label;
+    opt.textContent = ${label} — ${price} ريال/صفحة;
     cvType.appendChild(opt);
   });
 }
-updateCVTypes();
-urgency.addEventListener("change",updateCVTypes);
+fillCvTypes();
+urgency.addEventListener('change', ()=>{ fillCvTypes(); updatePreview(); });
 
-/* تحويل رقم إلى أرقام عربية */
-function toArabic(num){
-  return num.toString().replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+/* تحديث الأرقام في البطاقات */
+function updatePreview(){
+  const unit = PRICES[urgency.value][cvType.value] || 0;
+  const pgs  = Math.max(1, parseInt(pages.value||'1',10));
+  const base = unit * pgs;
+  const add  = (+extraDesign.value) + (+extraTrans.value) + (+extraEditable.value);
+  const total= base + add;
+
+  pricePer.textContent  = toArabic(unit);
+  baseTotal.textContent = toArabic(base);
+  addons.textContent    = toArabic(add);
+  grand.textContent     = toArabic(total);
+}
+['change','input'].forEach(ev=>{
+  pages.addEventListener(ev, updatePreview);
+  cvType.addEventListener(ev, updatePreview);
+  extraDesign.addEventListener(ev, updatePreview);
+  extraTrans.addEventListener(ev, updatePreview);
+  extraEditable.addEventListener(ev, updatePreview);
+});
+
+/* بناء نص الفاتورة */
+function buildInvoice(){
+  const unit = PRICES[urgency.value][cvType.value] || 0;
+  const pgs  = Math.max(1, parseInt(pages.value||'1',10));
+  const base = unit * pgs;
+  const add  = (+extraDesign.value) + (+extraTrans.value) + (+extraEditable.value);
+  const total= base + add;
+
+  const langMap = {ar:'العربية', en:'الإنجليزية', bi:'ثنائية اللغة'};
+  const modeTxt = urgency.value==='urgent' ? 'مستعجل (٢٤ ساعة)' : 'غير مستعجل (٤٨ ساعة)';
+
+  return [
+    'فاتورة أولية',
+    '----------------------',
+    👤 العميل: ${nameEl.value || 'غير محدد'},
+    📞 الجوال: ${phoneEl.value || 'غير محدد'},
+    '',
+    📌 نوع الطلب: ${modeTxt},
+    🌐 اللغة: ${langMap[lang.value]},
+    📄 نوع السيرة: ${cvType.value},
+    📑 عدد الصفحات: ${toArabic(pgs)},
+    '',
+    💰 سعر الصفحة: ${toArabic(unit)} ريال,
+    💼 تكلفة الأساس: ${toArabic(base)} ريال,
+    ➕ إضافات: ${toArabic(add)} ريال,
+    '======================',
+    الإجمالي المستحق: ${toArabic(total)} ريال,
+    '',
+    '⚠ الأسعار مبنية على تقدير أولي لصفحة واحدة فقط.'
+  ].join('\n');
 }
 
-/* الحساب */
-document.getElementById("calcBtn").addEventListener("click",()=>{
-  let p=parseInt(pages.value)||1;
-  let unit=PRICES[urgency.value][cvType.value]||0;
-  let base=unit*p;
-  let extras=+extraDesign.value+ +extraTrans.value+ +extraEditable.value;
-  let total=base+extras;
-
-  pricePer.textContent=toArabic(unit);
-  baseTotal.textContent=toArabic(base);
-  addons.textContent=toArabic(extras);
-  grand.textContent=toArabic(total);
-
-  invoice.value=
-`فاتورة أولية
-----------------------
-👤 العميل: ${name.value||"غير محدد"}
-📞 الجوال: ${phone.value||"غير محدد"}
-
-📌 نوع الطلب: ${urgency.value==="urgent"?"مستعجل":"غير مستعجل"}
-📄 نوع السيرة: ${cvType.value}
-📑 عدد الصفحات: ${toArabic(p)}
-
-💰 الأساس: ${toArabic(base)} ريال
-➕ الإضافات: ${toArabic(extras)} ريال
-======================
-الإجمالي: ${toArabic(total)} ريال
-
-⚠ الأسعار مبنية على تقدير أولي لصفحة واحدة فقط.`;
+/* أزرار */
+document.getElementById('calcBtn').addEventListener('click', ()=>{
+  updatePreview();
+  invoice.value = buildInvoice();
 });
 
-/* نسخ */
-document.getElementById("copyBtn").addEventListener("click",()=>{
-  invoice.select(); document.execCommand("copy");
-  alert("تم نسخ الفاتورة ✅");
+document.getElementById('copyBtn').addEventListener('click', ()=>{
+  invoice.select(); document.execCommand('copy');
+  alert('تم نسخ الفاتورة ✅');
 });
 
-/* واتساب */
-document.getElementById("waBtn").addEventListener("click",()=>{
-  let msg=encodeURIComponent(invoice.value);
-  window.open("https://wa.me/?text="+msg,"_blank");
+document.getElementById('waBtn').addEventListener('click', ()=>{
+  if(!invoice.value) invoice.value = buildInvoice();
+  const url = 'https://wa.me/?text=' + encodeURIComponent(invoice.value);
+  window.open(url, '_blank');
 });
 
-/* إعادة ضبط */
-document.getElementById("resetBtn").addEventListener("click",()=>{
-  document.querySelector("form")?.reset();
-  invoice.value=""; pricePer.textContent=baseTotal.textContent=addons.textContent=grand.textContent="٠";
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  nameEl.value=''; phoneEl.value='';
+  urgency.value='normal'; pages.value=1; lang.value='ar';
+  extraDesign.value='0'; extraTrans.value='0'; extraEditable.value='0';
+  fillCvTypes(); updatePreview(); invoice.value='';
 });
+
+/* تهيئة أولية */
+updatePreview();
 </script>
 </body>
 </html>
