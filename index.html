@@ -2,175 +2,149 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>حاسبة السيرة الذاتية</title>
   <style>
     body {
       font-family: "Tahoma", sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
       margin: 20px;
-      background: #f9f9f9;
-      direction: rtl;
-      text-align: right;
     }
     h1 {
       text-align: center;
-      color: #2c3e50;
+      color: #503c2c;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
     label {
       display: block;
-      margin-top: 15px;
+      margin-top: 10px;
       font-weight: bold;
     }
-    select, input {
+    input, select {
       width: 100%;
       padding: 8px;
       margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    .extra {
-      margin-top: 10px;
+      margin-bottom: 15px;
     }
     button {
-      margin-top: 20px;
-      padding: 10px 15px;
-      background: #27ae60;
+      background-color: #503c2c;
       color: white;
       border: none;
-      border-radius: 5px;
+      padding: 10px 20px;
       cursor: pointer;
+      border-radius: 5px;
     }
     button:hover {
-      background: #219150;
+      background-color: #704c3c;
     }
     .result {
       margin-top: 20px;
       padding: 15px;
-      border: 1px solid #ccc;
-      background: #fff;
-      border-radius: 5px;
-    }
-    .note {
-      margin-top: 20px;
-      color: #c0392b;
-      font-size: 14px;
-    }
-    .logo {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .logo img {
-      max-width: 150px;
+      background: #f1f1f1;
+      border-radius: 8px;
     }
   </style>
 </head>
 <body>
 
-  <!-- الشعار -->
-  <div class="logo">
-    <img src="logo.png" alt="شعار الموقع">
+  <!-- شعار الموقع -->
+  <div style="text-align: center; margin-bottom: 20px;">
+    <img src="logo.png" alt="شعار الموقع" style="width:150px;">
   </div>
 
-  <h1>حاسبة السيرة الذاتية</h1>
+  <div class="container">
+    <h1>حاسبة السيرة الذاتية</h1>
 
-  <label>الاسم:</label>
-  <input type="text" id="name">
+    <label>الاسم:</label>
+    <input type="text" id="name">
 
-  <label>رقم الجوال:</label>
-  <input type="text" id="phone">
+    <label>رقم الجوال:</label>
+    <input type="text" id="phone">
 
-  <label>نوع الطلب:</label>
-  <select id="orderType" onchange="updateResumeTypes()">
-    <option value="">اختر...</option>
-    <option value="urgent">مستعجل (خلال 24 ساعة)</option>
-    <option value="normal">غير مستعجل (خلال 48 ساعة)</option>
-  </select>
+    <label>نوع الطلب:</label>
+    <select id="orderType" onchange="updateResumeTypes()">
+      <option value="">-- اختر --</option>
+      <option value="urgent">مستعجل</option>
+      <option value="normal">غير مستعجل</option>
+    </select>
 
-  <label>نوع السيرة:</label>
-  <select id="resumeType"></select>
+    <label>نوع السيرة:</label>
+    <select id="resumeType">
+      <option value="">-- اختر نوع السيرة --</option>
+    </select>
 
-  <div class="extra">
-    <label><input type="checkbox" id="design"> تصميم خاص (+10 ريال)</label>
-    <label><input type="checkbox" id="translate"> ترجمة السيرة (+10 ريال)</label>
-    <label><input type="checkbox" id="editable"> نسخة قابلة للتعديل (+15 ريال)</label>
+    <label>
+      <input type="checkbox" id="design"> تصميم احترافي (+10$)
+    </label>
+    <label>
+      <input type="checkbox" id="translate"> ترجمة للغة أخرى (+10$)
+    </label>
+    <label>
+      <input type="checkbox" id="editable"> ملف قابل للتعديل (+15$)
+    </label>
+
+    <button onclick="calculate()">احسب التكلفة</button>
+
+    <div id="result" class="result"></div>
   </div>
 
-  <button onclick="calculate()">احسب السعر</button>
+  <script>
+    const prices = {
+      urgent: { basic: 50, advanced: 70 },
+      normal: { basic: 30, advanced: 50 }
+    };
 
-  <div class="result" id="result"></div>
+    function updateResumeTypes() {
+      const orderType = document.getElementById("orderType").value;
+      const resumeType = document.getElementById("resumeType");
+      resumeType.innerHTML = "";
 
-  <div class="note">
-    ⚠ الأسعار مبنية على تقدير أولي لصفحة واحدة فقط.<br>
-    في حال تجاوزت السيرة صفحة واحدة بعد التنسيق، يتم احتساب الزيادة (10 ريال لكل نصف صفحة / 15 ريال لكل صفحة).
-  </div>
-
-<script>
-  const prices = {
-    urgent: {
-      "سيرة ذاتية احترافية باللغة العربية": 35,
-      "سيرة ذاتية احترافية باللغة الإنجليزية": 35,
-      "سيرة ذاتية احترافية ثنائية اللغة": 45,
-      "سيرة ذاتية رسمية باللغة العربية": 35,
-      "سيرة ذاتية بسيطة باللغة الإنجليزية": 35,
-      "سيرة ذاتية رسمية ثنائية اللغة": 40,
-      "سيرة ذاتية احترافية تدعم ATS": 45,
-      "سيرة ذاتية باللغة الإنجليزية تدعم ATS": 40
-    },
-    normal: {
-      "سيرة ذاتية احترافية باللغة العربية": 25,
-      "سيرة ذاتية احترافية باللغة الإنجليزية": 25,
-      "سيرة ذاتية احترافية ثنائية اللغة": 30,
-      "سيرة ذاتية رسمية باللغة العربية": 25,
-      "سيرة ذاتية رسمية باللغة الإنجليزية": 25,
-      "سيرة ذاتية رسمية ثنائية اللغة": 30,
-      "سيرة ذاتية احترافية تدعم ATS": 30,
-      "سيرة ذاتية باللغة الإنجليزية تدعم ATS": 30
-    }
-  };
-
-  function updateResumeTypes() {
-    const orderType = document.getElementById("orderType").value;
-    const resumeSelect = document.getElementById("resumeType");
-    resumeSelect.innerHTML = "";
-
-    if (orderType && prices[orderType]) {
-      Object.keys(prices[orderType]).forEach(type => {
-        const option = document.createElement("option");
-        option.value = type;
-        option.textContent = ${type} - ${prices[orderType][type]} ريال / الصفحة;
-        resumeSelect.appendChild(option);
-      });
-    }
-  }
-
-  function calculate() {
-    const name = document.getElementById("name").value;
-    const phone = document.getElementById("phone").value;
-    const orderType = document.getElementById("orderType").value;
-    const resumeType = document.getElementById("resumeType").value;
-
-    if (!name || !phone || !orderType || !resumeType) {
-      alert("الرجاء تعبئة جميع الحقول");
-      return;
+      if (orderType === "urgent") {
+        resumeType.innerHTML += '<option value="basic">سيرة مستعجلة عادية</option>';
+        resumeType.innerHTML += '<option value="advanced">سيرة مستعجلة متقدمة</option>';
+      } else if (orderType === "normal") {
+        resumeType.innerHTML += '<option value="basic">سيرة غير مستعجلة عادية</option>';
+        resumeType.innerHTML += '<option value="advanced">سيرة غير مستعجلة متقدمة</option>';
+      }
     }
 
-    let price = prices[orderType][resumeType];
+    function calculate() {
+      const name = document.getElementById("name").value;
+      const phone = document.getElementById("phone").value;
+      const orderType = document.getElementById("orderType").value;
+      const resumeType = document.getElementById("resumeType").value;
 
-    if (document.getElementById("design").checked) price += 10;
-    if (document.getElementById("translate").checked) price += 10;
-    if (document.getElementById("editable").checked) price += 15;
+      if (!name || !phone || !orderType || !resumeType) {
+        alert("الرجاء تعبئة جميع الحقول!");
+        return;
+      }
 
-    const invoice = `
-      <h3>فاتورة تقديرية</h3>
-      <p><strong>الاسم:</strong> ${name}</p>
-      <p><strong>رقم الجوال:</strong> ${phone}</p>
-      <p><strong>نوع الطلب:</strong> ${orderType === "urgent" ? "مستعجل (24 ساعة)" : "غير مستعجل (48 ساعة)"}</p>
-      <p><strong>نوع السيرة:</strong> ${resumeType}</p>
-      <p><strong>السعر النهائي:</strong> ${price} ريال</p>
-    `;
+      let price = prices[orderType][resumeType];
 
-    document.getElementById("result").innerHTML = invoice;
-  }
-</script>
+      if (document.getElementById("design").checked) price += 10;
+      if (document.getElementById("translate").checked) price += 10;
+      if (document.getElementById("editable").checked) price += 15;
+
+      const invoice = `
+        <h3>فاتورة مبدئية</h3>
+        <p><strong>الاسم:</strong> ${name}</p>
+        <p><strong>الجوال:</strong> ${phone}</p>
+        <p><strong>نوع الطلب:</strong> ${orderType === "urgent" ? "مستعجل" : "غير مستعجل"}</p>
+        <p><strong>نوع السيرة:</strong> ${resumeType === "basic" ? "عادية" : "متقدمة"}</p>
+        <p><strong>السعر الإجمالي:</strong> $${price}</p>
+      `;
+
+      document.getElementById("result").innerHTML = invoice;
+    }
+  </script>
 
 </body>
 </html>
